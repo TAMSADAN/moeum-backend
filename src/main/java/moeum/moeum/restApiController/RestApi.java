@@ -2,6 +2,7 @@ package moeum.moeum.restApiController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ import java.util.Map;
 @RestController
 public class RestApi {
 
+    @Value("${apiKey}")
+    private String apiKey;
+
     @GetMapping("/nft-assets")
     public String getNFTs(@RequestParam("addr") String addr) throws JsonProcessingException {
 
@@ -36,6 +40,8 @@ public class RestApi {
             RestTemplate restTemplate = new RestTemplate(factory);
 
             HttpHeaders header = new HttpHeaders();
+            header.set("X-API-Key", apiKey);
+            header.set("Accept", "application/json")
             HttpEntity<?> entity = new HttpEntity<>(header);
 
             String url = "https://deep-index.moralis.io/api/v2";
