@@ -27,7 +27,8 @@ public class RestApi {
     private String apiKey;
 
     @GetMapping("/nft-assets")
-    public String getNFTs(@RequestParam("addr") String addr) throws JsonProcessingException {
+    public String getNFTs(@RequestParam("addr") String addr, @RequestParam("chain") String chain)
+            throws JsonProcessingException {
 
         HashMap<String, Object> result = new HashMap<String, Object>();
         String jsonInString = "";
@@ -41,17 +42,17 @@ public class RestApi {
 
             HttpHeaders header = new HttpHeaders();
             header.set("X-API-Key", apiKey);
-            header.set("Accept", "application/json")
+            header.set("Accept", "application/json");
             HttpEntity<?> entity = new HttpEntity<>(header);
 
             String url = "https://deep-index.moralis.io/api/v2";
-            UriComponents uri = UriComponentsBuilder.fromHttpUrl(url + "/" + addr + "/nft" + "?").build();
+            UriComponents uri = UriComponentsBuilder.fromHttpUrl(url + "/" + addr + "/nft?chain=" + chain).build();
 
             //이 한줄의 코드로 API를 호출해 Map type으로 전달 받는다.
             ResponseEntity<Map> resultMap = restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
-            result.put("statusCode", resultMap.getStatusCodeValue()); //http status code 확인
-            result.put("header", resultMap.getHeaders()); //헤더 정보 확인
-            result.put("body", resultMap.getBody()); //실제 데이터 정보 확인
+            result.put("statusCode", resultMap.getStatusCodeValue());   //http status code 확인
+            result.put("header", resultMap.getHeaders());   //헤더 정보 확인
+            result.put("body", resultMap.getBody());    //실제 데이터 정보 확인
 
             //데이터를 제대로 전달 받았는지 확인 string 형태로 파싱해줌
             ObjectMapper mapper = new ObjectMapper();
